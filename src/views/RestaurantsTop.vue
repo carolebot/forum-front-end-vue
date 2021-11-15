@@ -4,7 +4,7 @@
     <h1 class="mt-5">人氣餐廳</h1>
     <hr />
     <TopRestaurant 
-    v-for="restaurant in restaurants" :key="restaurant.id" :restaurant="restaurant"/>
+    v-for="restaurant in restaurants" :key="restaurant.id" :initialRestaurant="restaurant"/>
   </div>
 </template>
 

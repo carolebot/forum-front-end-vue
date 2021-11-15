@@ -17,7 +17,9 @@
       
       <div class="ml-auto d-flex align-items-center">
         <!-- is user is admin  -->
-        <router-link v-if="currentUser.isAdmin" to="#" class="text-white mr-3">
+        <router-link v-if="currentUser.isAdmin" 
+        
+        :to="{name:'admin-restaurants'}" class="text-white mr-3">
           管理員後台
         </router-link>
 
@@ -62,7 +64,6 @@ const dummyUser = {
 
 export default {
   data() {
-    //return 一個物件
     return {
       currentUser: {
         id: -1,

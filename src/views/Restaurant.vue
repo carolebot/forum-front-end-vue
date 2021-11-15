@@ -2,9 +2,9 @@
   <div class="container py-5">
     <!-- 餐廳資訊頁 RestaurantDetail -->
     <RestaurantDetail 
-    :isFavorited="isFavorited"
-    :isLiked="isLiked"
-    :restaurant="restaurant" />
+    :isFavorited="restaurant.isFavorited"
+    :isLiked="restaurant.isLiked"
+    :initialRestaurant="restaurant" />
     <h2 class="my-4">所有評論：</h2>
     <RestaurantComment
       @after-delete-comment="afterDeleteComment"
@@ -113,7 +113,7 @@ const dummyData = {
 
 const dummyUser = {
   currentUser: {
-    id: 1,
+    id: 3,
     name: '管理者',
     email: 'root@example.com',
     image: 'https://i.pravatar.cc/300',

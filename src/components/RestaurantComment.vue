@@ -47,13 +47,12 @@ export default {
     }
   },
   data() {
-    return {  //可以透過isAdmin來判斷是否為管理者
+    return {  
       currentUser: dummyUser.currentUser 
     }
   },
   methods: {
     handleDeleteBtnClick(commentId) {
-      console.log(commentId)
       // 透過API請求刪除該筆comment
       // comment刪除後 註冊事件 帶參數id
       this.$emit('after-delete-comment', commentId)

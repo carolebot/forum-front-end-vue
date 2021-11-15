@@ -9,7 +9,7 @@
     <div class="col-lg-4">
       <img
         class="img-responsive center-block"
-        :src="restaurant.image"
+        :src="restaurant.image | emptyImage"
         style="width: 250px; margin-bottom: 25px"
       />
       <div class="contact-info-wrap">
@@ -74,14 +74,19 @@
 </template>
 
 <script>
-import { btns } from "../utils/mixins";
+import { btns, emptyImageFilter } from "../utils/mixins";
 export default {
-  mixins: [btns],
+  mixins: [btns, emptyImageFilter],
   props: {
-    restaurant: {
+    initialRestaurant: {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      restaurant: this.initialRestaurant,
+    };
   },
 };
 </script>

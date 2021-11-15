@@ -3,7 +3,7 @@
     <div class="card mb-4">
       <img
         class="card-img-top"
-        :src="restaurant.image"
+        :src="restaurant.image | emptyImage"
         alt="Card image cap"
         width="286px"
         height="180px"
@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import { btns } from '../utils/mixins';
+import { btns,emptyImageFilter } from '../utils/mixins';
 export default {
-  mixins: [btns],
+  mixins: [btns, emptyImageFilter],
   props: {
     initialRestaurant: {
       type: Object,
@@ -76,9 +76,5 @@ export default {
       restaurant: this.initialRestaurant,
     };
   },
-  // methods: {
-
-  //  
-  // },
 };
 </script>

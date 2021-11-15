@@ -8,7 +8,7 @@
         :to="{ name: 'restaurant', params: { id: restaurant.id } }"
       >
         <img
-          :src="restaurant.image"
+          :src="restaurant.image | emptyImage"
           width="60"
           height="60"
           class="avatar mx-1"
@@ -20,7 +20,9 @@
 
 
 <script>
+import { emptyImageFilter } from '../../utils/mixins';
 export default {
+  mixins: [ emptyImageFilter ],
   props: {
     profile: {
       type: Object,

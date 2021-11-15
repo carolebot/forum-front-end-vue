@@ -1,8 +1,8 @@
  <template>
     <div class="col-3">
-      <router-link :to="{ name: 'users'}">
+      <router-link :to="{ name: 'user-profile', params:{id: user.id}}">
         <img
-          :src="user.image"
+          :src="user.image | emptyImage"
           width="140px"
           height="140px"
         />
@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import { btns } from "../utils/mixins";
+import { btns,emptyImageFilter } from '../utils/mixins';
 export default {
-  mixins: [btns],
+  mixins: [btns, emptyImageFilter],
   props: {
     initialUser: {
       type: Object,

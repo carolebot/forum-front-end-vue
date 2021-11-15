@@ -116,12 +116,6 @@ export default {
     const { id: restaurantId } = this.$route.params;
     this.fetchDashboard(restaurantId);
   },
-
-  //{{ restaurant.name }} 
-  //{{ restaurant.categoryName }}
-  //{{ restaurant.commentsLength }} }
-  //{{ restaurant.viewCounts }} }
-
   methods: {
     fetchDashboard() {
       const categoryName = dummyData.restaurant.Category.name;

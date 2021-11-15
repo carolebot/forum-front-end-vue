@@ -7,16 +7,18 @@
        <router-link
         v-for="follower in profile.Followers"
         :key="follower.id"
-        :to="{ name: 'follower', params: { id: follower.id } }"
+        :to="{ name: 'user-profile', params: { id: follower.id } }"
       >
-        <img :src="follower.image" width="60" height="60" class="avatar mx-1" />
+        <img :src="follower.image | emptyImage" width="60" height="60" class="avatar mx-1" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { emptyImageFilter } from '../../utils/mixins';
 export default {
+  mixins: [ emptyImageFilter ],
   props: {
     profile: {
       type: Object,

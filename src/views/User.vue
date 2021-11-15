@@ -43,7 +43,7 @@ const dummyUser = {
 };
 const dummyData = {
   profile: {
-    id: 3,
+    id: 1,
     name: "root",
     email: "root@example.com",
     password: "$2a$10$OJ3jR93XlEMrQtYMWOIQh.EINWgaRFTXkd0Xi5OC/Vz4maztUXEPe",
