@@ -75,7 +75,9 @@ export default {
   methods: {
     fetchUsers() {
       const { users } = dummyData;
-      this.users = users;
+      this.users = {
+        ...users
+      };
     },
   },
 };
