@@ -1,6 +1,8 @@
 <template>
   <div class="container py-5">
     <!-- 餐廳資訊頁 RestaurantDetail -->
+    <Spinner v-if="isLoading" />
+    <template v-else>
     <RestaurantDetail :initialRestaurant="restaurant" />
     <h2 class="my-4">所有評論：</h2>
     <RestaurantComment
@@ -14,6 +16,7 @@
       @after-create-comment="afterCreateComment"
       :restaurantId="restaurant.id"
     />
+    </template>
   </div>
 </template>
 
@@ -21,6 +24,7 @@
 import RestaurantDetail from "./../components/RestaurantDetail";
 import RestaurantComment from "./../components/RestaurantComment";
 import CreateComment from "./../components/CreateComment";
+import Spinner from "./../components/Spinner";
 import restaurantsAPI from "./../apis/restaurants";
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
@@ -31,6 +35,7 @@ export default {
     RestaurantDetail,
     RestaurantComment,
     CreateComment,
+    Spinner,
   },
   data() {
     return {
@@ -47,6 +52,7 @@ export default {
         isLiked: false,
       },
       restaurantComments: [],
+      isLoading: true,
     };
   },
   created() {
@@ -82,6 +88,7 @@ export default {
     },
     async fetchRestaurant(restaurantId) {
       try {
+         this.isLoading = true;
         const { data } = await restaurantsAPI.getRestaurantDetail(restaurantId);
         console.log(data);
         const isFavorited = data.isFavorited;
@@ -103,7 +110,9 @@ export default {
           isLiked,
         };
         this.restaurantComments = restaurantComments;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法獲取餐廳細節",
