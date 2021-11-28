@@ -25,6 +25,13 @@ export default new Vuex.Store({
       }
       // 將使用者的登入狀態改為 true
       state.isAuthenticated = true
+      state.token = localStorage.getItem('token')
+    },
+    revokeAuthentication(state) {
+      state.currentUser = {}
+      state.isAuthenticated = false
+      localStorage.removeItem('token')
+      state.token = ''
     }
   },
   actions: {
@@ -43,6 +50,9 @@ export default new Vuex.Store({
         return true
       } catch (error) {
         console.log(error)
+        // 失敗的話一併觸發登出的行為，以清除 state 中的 token
+        commit('revokeAuthentication')
+        return false
       }
     }
   },
