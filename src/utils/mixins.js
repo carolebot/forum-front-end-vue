@@ -1,4 +1,7 @@
 import moment from 'moment'
+import { Toast } from './../utils/helpers'
+import usersAPI from './../apis/users'
+
 
 export const emptyImageFilter = {
   filters: {
@@ -20,41 +23,110 @@ export const fromNowFilter = {
 }
 export const btns = {
   methods: {
-    addFavorite() {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: true,
-      };
+    async addFavorite(restaurantId) {
+      try {
+        const { data } = await usersAPI.addFavorite({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: true,
+        };
+      }
+      catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法加入最愛'
+        })
+      }
     },
-    removeFavorite() {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: false,
-      };
+    async removeFavorite(restaurantId) {
+      try {
+        const { data } = await usersAPI.removeFavorite({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: false,
+        };
+      }
+      catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法移除最愛'
+        })
+      }
     },
-    addLiked() {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: true,
-      };
+    async addLiked(restaurantId) {
+      try {
+        const { data } = await usersAPI.addLiked({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: true,
+        }
+      }
+      catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法加入liked'
+        })
+      }
     },
-    removeLiked() {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: false,
-      };
+    async removeLiked(restaurantId) {
+      try {
+        const { data } = await usersAPI.removeLiked({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: false,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法移除Liked'
+        })
+      }
     },
-    follow() {
-      this.user = {
-        ...this.user,
-        isFollowed: true,
-      };
+    async follow(userId) {
+      try {
+        const { data } = await usersAPI.follow({ userId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.user = {
+          ...this.user,
+          isFollowed: true,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法追蹤'
+        })
+      }
     },
-    unfollow() {
-      this.user = {
-        ...this.user,
-        isFollowed: false,
-      };
+    async unfollow(userId) {
+      try {
+        const { data } = await usersAPI.unfollow({ userId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.user = {
+          ...this.user,
+          isFollowed: false,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消追蹤'
+        })
+      }
     },
   },
 }

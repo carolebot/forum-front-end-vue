@@ -14,49 +14,8 @@
 import NavTabs from "./../components/NavTabs";
 import UserCard from "./../components/UserCard";
 
-const dummyData = {
-  users: [
-    {
-      id: 1,
-      name: "root",
-      email: "root@example.com",
-      password: "$2a$10$kzflzg2uL9ZgVBWoobl19.OhTvSzmAnXIg/JS11EDeRSBHBxifNfC",
-      isAdmin: true,
-      image: "https://images.twgreatdaily.com/images/elastic/m63/m63Hp3MBURTf-Dn5mmLU.jpg",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-      Followers: [],
-      FollowerCount: 0,
-      isFollowed: false,
-    },
-    {
-      id: 2,
-      name: "user1",
-      email: "user1@example.com",
-      password: "$2a$10$vJkOL4tLH77VRe1duVSExelRClufXpS/9OBpHARaGVa9yqTquY8gK",
-      isAdmin: false,
-      image: "https://i.ppfocus.com/2020/8/a1edece.jpg",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-      Followers: [],
-      FollowerCount: 0,
-      isFollowed: false,
-    },
-    {
-      id: 3,
-      name: "user2",
-      email: "user2@example.com",
-      password: "$2a$10$F22u2Sq/WVtGdTUDRAvXW.BbxuzOT3FpKyMJCPMuoXm5Te9WCQ2Jm",
-      isAdmin: false,
-      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/64363776/android/sticker.png",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-      Followers: [],
-      FollowerCount: 0,
-      isFollowed: false,
-    },
-  ],
-};
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
 
 export default {
   name: "UsersTop",
@@ -70,14 +29,22 @@ export default {
     };
   },
   created() {
-    this.fetchUsers();
+    this.fetchTopUsers();
   },
   methods: {
-    fetchUsers() {
-      const { users } = dummyData;
-      this.users = {
-        ...users
-      };
+    async fetchTopUsers() {
+      try {
+        const { data } = await usersAPI.getTopUsers();
+        this.users = {
+          ...data.users,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "目前無法獲取達人資料",
+        });
+        console.log(error)
+      }
     },
   },
 };

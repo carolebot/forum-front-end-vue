@@ -20,7 +20,6 @@
         />
       </div>
 
-
       <div class="form-label-group mb-2">
         <label for="email">email</label>
         <input
@@ -64,15 +63,17 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">
+      <button
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+        :disabled="isProcessing"
+      >
         Submit
       </button>
 
       <div class="text-center mb-3">
         <p>
-        <router-link to="/signin">
-          Sign In
-        </router-link>
+          <router-link to="/signin"> Sign In </router-link>
         </p>
       </div>
 
@@ -83,6 +84,8 @@
 
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+import { Toast } from "./../utils/helpers";
 export default {
   data() {
     return {
@@ -90,19 +93,65 @@ export default {
       email: "",
       password: "",
       passwordCheck: "",
+      isProcessing: false,
     };
   },
-  methods:{
-    handleSubmit(){
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck
-      })
-      //資料送到後端
-       console.log('data', data)
-    }
+  methods: {
+    async handleSubmit() {
+      try {
+        if (
+          !this.name ||
+          !this.email ||
+          !this.password ||
+          !this.passwordCheck
+        ) {
+          Toast.fire({
+            icon: "error",
+            title: "有欄位尚未填寫",
+          });
+          return;
+        }
+
+        if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            icon: "error",
+            title: "密碼不一致，請重新輸入",
+          });
+          this.password = "";
+          this.passwordCheck = "";
+          return;
+        }
+
+        this.isProcessing = true;
+
+        const { data } = await authorizationAPI.signUp({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        });
+        console.log(data)
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.isProcessing = false;
+
+        Toast.fire({
+          icon: "success",
+          title: data.message,
+        });
+
+        //註冊成功到餐廳頁
+        this.$router.push({ name: "sign-in" });
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法註冊",
+        });
+      }
+    },
   },
 };
 </script>

@@ -34,15 +34,17 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">
+      <button
+        :disabled="isProcessing"
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+      >
         Submit
       </button>
 
       <div class="text-center mb-3">
         <p>
-        <router-link to="/signup">
-          Sign Up
-        </router-link>
+          <router-link to="/signup"> Sign Up </router-link>
         </p>
       </div>
 
@@ -53,21 +55,54 @@
 
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+import { Toast } from "./../utils/helpers";
 export default {
   data() {
     return {
       email: "",
       password: "",
+      isProcessing: false,
     };
   },
-  methods:{
-    handleSubmit(){
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password
-      })
-       console.log('data', data)
-    }
+  methods: {
+    async handleSubmit() {
+      try {
+        if (!this.email || !this.password) {
+          Toast.fire({
+            icon: "warning",
+            title: "請輸入email 跟 password",
+          });
+          return;
+        }
+        this.isProcessing = true;
+
+        const response = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password,
+        });
+
+        // TODO: 取得 API 請求後的資料
+        const { data } = response;
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        localStorage.setItem("token", data.token);
+
+        this.$store.commit('setCurrentUser', data.user)
+
+        this.$router.push("/restaurants");
+      } catch (error) {
+        this.password = "";
+
+        Toast.fire({
+          icon: "warning",
+          title: "帳號或密碼有誤",
+        });
+        this.isProcessing = false;
+        console.log(error);
+      }
+    },
   },
 };
 </script>

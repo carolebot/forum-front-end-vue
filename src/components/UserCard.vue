@@ -12,7 +12,7 @@
       <p class="mt-3">
         <button
           v-if="user.isFollowed"
-          @click.prevent.stop="unfollow"
+          @click.prevent.stop="unfollow(user.id)"
           type="button"
           class="btn btn-danger"
         >
@@ -20,7 +20,7 @@
         </button>
         <button
           v-else
-          @click.prevent.stop="follow"
+          @click.prevent.stop="follow(user.id)"
           type="button"
           class="btn btn-primary"
         >

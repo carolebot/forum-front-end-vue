@@ -1,11 +1,11 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ profile.Followers.length }}</strong> followers (追隨者)
+      <strong>{{ followers.length }}</strong> followers (追隨者)
     </div>
     <div class="card-body">
        <router-link
-        v-for="follower in profile.Followers"
+        v-for="follower in followers"
         :key="follower.id"
         :to="{ name: 'user-profile', params: { id: follower.id } }"
       >
@@ -20,10 +20,10 @@ import { emptyImageFilter } from '../../utils/mixins';
 export default {
   mixins: [ emptyImageFilter ],
   props: {
-    profile: {
-      type: Object,
-      required: true,
-    },
+    followers:{
+      type: Array,
+      default: () => []
+    }
   },
 };
 </script>

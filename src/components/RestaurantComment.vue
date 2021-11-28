@@ -12,51 +12,53 @@
         </button>
         <h3>
           <a href="#">
-            {{restaurantComment.User.name}}
+            {{ restaurantComment.User.name }}
           </a>
         </h3>
-        <p>{{restaurantComment.text}}</p>
+        <p>{{ restaurantComment.text }}</p>
         <footer class="blockquote-footer">
-          {{restaurantComment.createdAt | fromNow }}
+          {{ restaurantComment.createdAt | fromNow }}
         </footer>
       </blockquote>
-      <hr>
+      <hr />
     </div>
   </div>
 </template>
 
 <script>
-import { fromNowFilter } from './../utils/mixins'
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
-
+import { fromNowFilter } from "./../utils/mixins";
+import commentAPI from "./../apis/comments";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 export default {
   mixins: [fromNowFilter],
   props: {
     restaurantComment: {
       type: Object,
-      require: true
-    }
-  },
-  data() {
-    return {  
-      currentUser: dummyUser.currentUser 
-    }
+      require: true,
+    },
   },
   methods: {
-    handleDeleteBtnClick(commentId) {
-      // 透過API請求刪除該筆comment
-      // comment刪除後 註冊事件 帶參數id
-      this.$emit('after-delete-comment', commentId)
-    }
-  }
-}
+    async handleDeleteBtnClick(commentId) {
+      try {
+        const { data } = await commentAPI.removeComment({commentId});
+        if (data.status !== "success") {
+          this.isProcessing = false;
+          throw new Error(data.message);
+        }
+        // 透過API請求刪除該筆comment
+        // comment刪除後 註冊事件 帶參數id
+        this.$emit("after-delete-comment", commentId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除餐廳",
+        });
+      }
+    },
+  },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+};
 </script>

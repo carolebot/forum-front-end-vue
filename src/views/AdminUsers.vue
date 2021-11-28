@@ -15,24 +15,17 @@
         <tr v-for="user in users" :key="user.id">
           <th scope="row">{{ user.id }}</th>
           <td>{{ user.email }}</td>
-          <td v-if="user.isAdmin">admin</td>
-          <td v-else>user</td>
+          <td>{{ user.isAdmin ? "admin" : "user" }}</td>
           <td>
             <button
-              @click.stop.prevent="toggleUserRole(user.id)"
-              v-if="user.isAdmin && user.email !== 'root@example.com'"
+              @click.stop.prevent="
+                toggleUserRole({ userId: user.id, isAdmin: user.isAdmin })
+              "
+              v-if="currentUser.id !== user.id"
               type="button"
               class="btn btn-link"
             >
-              set as user
-            </button>
-            <button
-              @click.stop.prevent="toggleUserRole(user.id)"
-              v-if="!user.isAdmin"
-              type="button"
-              class="btn btn-link"
-            >
-              set as admin
+              {{ user.isAdmin ? "set as user" : "set as admin" }}
             </button>
           </td>
         </tr>
@@ -43,40 +36,9 @@
 
 <script>
 import AdminNav from "./../components/Admin/AdminNav.vue";
-const dummyData = {
-  users: [
-    {
-      id: 1,
-      name: "root",
-      email: "root@example.com",
-      password: "$2a$10$kzflzg2uL9ZgVBWoobl19.OhTvSzmAnXIg/JS11EDeRSBHBxifNfC",
-      isAdmin: true,
-      image: null,
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 2,
-      name: "user1",
-      email: "user1@example.com",
-      password: "$2a$10$vJkOL4tLH77VRe1duVSExelRClufXpS/9OBpHARaGVa9yqTquY8gK",
-      isAdmin: false,
-      image: null,
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 3,
-      name: "user2",
-      email: "user2@example.com",
-      password: "$2a$10$F22u2Sq/WVtGdTUDRAvXW.BbxuzOT3FpKyMJCPMuoXm5Te9WCQ2Jm",
-      isAdmin: false,
-      image: null,
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-  ],
-};
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 export default {
   name: "AdminUsers",
   components: {
@@ -90,22 +52,52 @@ export default {
   created() {
     this.fetchUsers();
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   methods: {
-    fetchUsers() {
-      this.users  = dummyData.users.map((user) => ({
-       ...user,
-      }));
-    },
-    toggleUserRole(userId) {
-      this.users = this.users.map(user => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isAdmin: !user.isAdmin, 
-          };
+    async fetchUsers() {
+      try {
+        const { data } = await adminAPI.users.get();
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
-        return user;
-      });
+        this.users = data.users.map((user) => ({
+          ...user,
+        }));
+      } catch (error) {
+        Toast({
+          icon: "error",
+          title: "無法獲取資料",
+        });
+      }
+    },
+    async toggleUserRole({ userId, isAdmin }) {
+      try {
+        const { data } = await adminAPI.users.update({
+          userId,
+          isAdmin: (!isAdmin).toString(),
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.users = this.users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isAdmin: !isAdmin,
+            };
+          }
+          return user;
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法切換角色",
+        });
+      }
     },
   },
 };

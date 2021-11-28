@@ -8,17 +8,25 @@
       <button type="button" class="btn btn-link" @click="$router.back()">
         回上一頁
       </button>
-      <button type="submit" class="btn btn-primary mr-0">Submit</button>
+      <button
+        :disabled="isProcessing"
+        type="submit"
+        class="btn btn-primary mr-0"
+      >
+        Submit
+      </button>
     </div>
   </form>
 </template>
 <script>
-import { v4 as uuidv4 } from "uuid"
+import commentAPI from "./../apis/comments";
+import { Toast } from "./../utils/helpers";
 export default {
   name: "CreateComment",
   data() {
     return {
       text: "",
+      isProcessing: false,
     };
   },
   props: {
@@ -28,15 +36,42 @@ export default {
     },
   },
   methods: {
-    handleSubmit() {
-      //todo 需要請求API新增comment 收commentId
-      this.$emit("after-create-comment", {
-        commentId: uuidv4(),  //目前尚未串接API 無法取得commentId
-        restaurantId: this.restaurantId,
-        text: this.text
-      })
-      this.text = '' // 將表單內的資料清空
+    async handleSubmit() {
+      try {
+        if (!this.text) {
+          Toast.fire({
+            icon: "error",
+            title: "評論內容為空",
+          });
+          return;
+        }
+
+        this.isProcessing = true;
+        const { data } = await commentAPI.addComment({
+          restaurantId: this.restaurantId,
+          text: this.text,
+        });
+
+        if (data.status !== "success") {
+          this.isProcessing = false;
+          throw new Error(data.message);
+        }
+        //todo 需要請求API新增comment 收commentId
+        this.$emit("after-create-comment", {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.text,
+        });
+        this.isProcessing = false;
+        this.text = ""; // 將表單內的資料清空
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳類別",
+        });
+      }
     },
   },
-}; 
+};
 </script>

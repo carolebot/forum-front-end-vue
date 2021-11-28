@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent.stop="handleSubmit($event)">
+  <form @submit.prevent.stop="handleSubmit($event)" v-show="!isLoading">
     <div class="form-group">
       <label for="name">Name</label>
       <input
@@ -99,107 +99,104 @@
       />
     </div>
 
-    <button type="submit" class="btn btn-primary">送出</button>
+    <button :disabled="isProcessing" type="submit" class="btn btn-primary">
+      {{ isProcessing ? "處理中" : "送出" }}
+    </button>
   </form>
 </template>
 
 <script>
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: "中式料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 2,
-      name: "日本料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 3,
-      name: "義大利料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 4,
-      name: "墨西哥料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 5,
-      name: "素食料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 6,
-      name: "美式料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-    {
-      id: 7,
-      name: "複合式料理",
-      createdAt: "2021-11-07T17:41:46.000Z",
-      updatedAt: "2021-11-07T17:41:46.000Z",
-    },
-  ],
-};
+import adminAPI from "./../../apis/admin";
+import { Toast } from "./../../utils/helpers";
 
 export default {
-  name:"AdminRestaurantForm",
+  name: "AdminRestaurantForm",
   props: {
+    isProcessing: {
+      type: Boolean,
+      default: false,
+    },
     initialRestaurant: {
       type: Object,
       default: () => ({
-        name: '',
-        categoryId: '',
-        tel: '',
-        address: '',
-        description: '',
-        image: '',
-        openingHours: '',
-      })
-    }
+        name: "",
+        categoryId: "",
+        tel: "",
+        address: "",
+        description: "",
+        image: "",
+        openingHours: "",
+      }),
+    },
+  },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue,
+      };
+    },
   },
   data() {
     return {
       categories: [],
       restaurant: {
-        ...this.initialRestaurant
-      }
+        ...this.initialRestaurant,
+      },
+      isLoading: true,
     };
   },
-  created () {
-    this.fetchCategories()
+  created() {
+    this.fetchCategories();
     this.restaurant = {
       ...this.restaurant,
-      ...this.initialRestaurant
-    }
+      ...this.initialRestaurant,
+    };
   },
   methods: {
-    fetchCategories() {
-      this.categories = dummyData.categories;
+    async fetchCategories() {
+      try {
+        const { data } = await adminAPI.categories.get();
+        this.categories = data.categories;
+        this.isLoading = false;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳類別",
+        });
+        this.isLoading = false;
+      }
     },
     handleFileChange(e) {
       const files = e.target.files;
       if (files.length === 0) {
-        return
+        return;
       } else {
         const imageURL = window.URL.createObjectURL(files[0]);
         this.restaurant.image = imageURL;
       }
     },
-    handleSubmit(event){
-      const form = event.target
-      const formData = new FormData(form)
-      this.$emit('after-submit', formData)
-    }
+    handleSubmit(event) {
+      if (!this.restaurant.name) {
+        Toast.fire({
+          icon: "warning",
+          title: "請填寫餐廳名稱",
+        });
+        return;
+      } else if (!this.restaurant.categoryId) {
+        Toast.fire({
+          icon: "warning",
+          title: "請選擇餐廳類別",
+        });
+        return;
+      }
+      const form = event.target;
+      console.log(form)
+      const formData = new FormData(form);
+      
+      console.log(formData)
+      this.$emit("after-submit", formData);
+    },
   },
 };
 </script>

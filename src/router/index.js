@@ -3,17 +3,18 @@ import Router from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import SignIn from '../views/SignIn.vue'
 import Restaurants from '../views/Restaurants.vue'
-
+import store from './../store'
 
 Vue.use(Router)
 
-export default new Router({
+
+const router = new Router({
   linkExactActiveClass: 'active',
   routes: [
     {
       path: '/',
       name: 'root',
-      redirect: '/restaurants'
+      redirect: '/signin'
     },
     {
       path: '/signin',
@@ -107,3 +108,9 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  store.dispatch('fetchCurrentUser')
+  next()
+})
+export default router

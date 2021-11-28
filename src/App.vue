@@ -21,20 +21,8 @@ export default {
 }
 </script>
 
-<style>
-#app {
- 
-}
-
-#nav {
-
-}
-
-#nav a {
-
-}
-
-#nav a.router-link-exact-active {
-
-}
+<style scoped>
+  main {
+    margin-top: 65px !important;
+  }
 </style>

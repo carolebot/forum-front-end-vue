@@ -24,7 +24,7 @@
           >
 
           <button
-            @click.stop.prevent="removeFavorite"
+            @click.stop.prevent="removeFavorite(restaurant.id)"
             v-if="restaurant.isFavorited"
             type="button"
             class="btn btn-danger mr-2"
@@ -32,7 +32,7 @@
             移除最愛
           </button>
           <button
-            @click.stop.prevent="addFavorite"
+            @click.stop.prevent="addFavorite(restaurant.id)"
             v-else
             type="button"
             class="btn btn-primary"

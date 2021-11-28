@@ -38,7 +38,7 @@
       >
 
       <button
-        @click.stop.prevent="removeFavorite"
+        @click.stop.prevent="removeFavorite(restaurant.id)"
         v-if="restaurant.isFavorited"
         type="button"
         class="btn btn-danger btn-border mr-2"
@@ -46,7 +46,7 @@
         移除最愛
       </button>
       <button
-        @click.stop.prevent="addFavorite"
+        @click.stop.prevent="addFavorite(restaurant.id)"
         v-else
         type="button"
         class="btn btn-primary btn-border mr-2"
@@ -54,7 +54,7 @@
         加到最愛
       </button>
       <button
-        @click.stop.prevent="removeLiked"
+        @click.stop.prevent="removeLiked(restaurant.id)"
         v-if="restaurant.isLiked"
         type="button"
         class="btn btn-danger like mr-2"
@@ -62,7 +62,7 @@
         Unlike
       </button>
       <button
-        @click.stop.prevent="addLiked"
+        @click.stop.prevent="addLiked(restaurant.id)"
         v-else
         type="button"
         class="btn btn-primary like mr-2"
@@ -75,6 +75,7 @@
 
 <script>
 import { btns, emptyImageFilter } from "../utils/mixins";
+
 export default {
   mixins: [btns, emptyImageFilter],
   props: {
@@ -87,6 +88,14 @@ export default {
     return {
       restaurant: this.initialRestaurant,
     };
+  },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue,
+      };
+    },
   },
 };
 </script>
