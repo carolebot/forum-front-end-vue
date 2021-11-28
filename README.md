@@ -10,7 +10,7 @@
 - Edit personal profile
 
 ## How to open
-- git clone https://github.com/carolebot/Restaurant-forum.git
+- git clone
 - npm install
 - npm run serve
 - open http://localhost:8080 
