@@ -198,10 +198,7 @@ export default {
         return;
       }
       const form = event.target;
-      console.log(form);
       const formData = new FormData(form);
-
-      console.log(formData);
       this.$emit("after-submit", formData);
     },
   },

@@ -98,7 +98,6 @@ export default {
           userId: this.user.id,
           formData,
         });
-        console.log(this.user.id)
 
         if (data.status === "error") {
           throw new Error(data.message);

@@ -209,8 +209,7 @@ export default {
         });
       }
     },
-    handleCancel(categoryId, name) {
-      console.log(name);
+    handleCancel(categoryId) {
       this.categories = this.categories.map((category) => {
         if (category.id === categoryId) {
           return {

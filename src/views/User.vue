@@ -84,7 +84,6 @@ export default {
           throw new Error(data.message);
         }
         const { profile, isFollowed } = data;
-        console.log(data)
         const {
           id,
           image,

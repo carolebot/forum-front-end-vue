@@ -130,7 +130,6 @@ export default {
           password: this.password,
           passwordCheck: this.passwordCheck,
         });
-        console.log(data)
 
         if (data.status !== "success") {
           throw new Error(data.message);

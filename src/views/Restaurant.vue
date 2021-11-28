@@ -90,7 +90,6 @@ export default {
       try {
          this.isLoading = true;
         const { data } = await restaurantsAPI.getRestaurantDetail(restaurantId);
-        console.log(data);
         const isFavorited = data.isFavorited;
         const isLiked = data.isLiked;
         const categoryName = data.restaurant.Category.name;
