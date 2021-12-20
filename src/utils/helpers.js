@@ -1,14 +1,10 @@
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-const baseURL = 'http://localhost:3000/api'
-
-// export const apiHelper = axios.create({
-//   baseURL //baseURL: baseURL 縮寫
-// })
+const baseURL = 'https://forum-express-api.herokuapp.com/api'
 
 const axiosInstance = axios.create({
-  baseURL //baseURL: baseURL 
+  baseURL 
 })
 
 axiosInstance.interceptors.request.use(
